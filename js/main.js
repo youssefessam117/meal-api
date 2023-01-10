@@ -1,6 +1,7 @@
 // api
 let mainApi = `https://www.themealdb.com/api/json/v1/1/search.php?s=`;
-let mainRow = document.getElementById('randomMeals');
+let mainRow = document.getElementById("randomMeals");
+let search = document.getElementById("search");
 async function getData(api) {
   let response = await fetch(api);
   let finalResponse = await response.json();
@@ -13,14 +14,14 @@ async function getData(api) {
 // api
 // function to get the html content
 function template(data) {
-  return `<div class="mealBox col-md-3">
-    <div class="position-relative">
+  return `<div class="col-md-3">
+    <div class="mealBox position-relative rounded-2">
       <img
         class="w-100"
         src="${data.strMealThumb}"
         alt=""
       />
-      <div class="layer" id="layer">
+      <div class="layer d-flex align-items-center" id="layer">
         <h2>${data.strMeal}</h2>
       </div>
     </div>
@@ -40,10 +41,11 @@ async function displayData(array, div) {
 // displayData()
 // first page data
 async function randomData() {
+  search.innerHTML = "";
   let data = await getData(mainApi);
   displayData(data, template);
 }
-randomData();
+// randomData();
 // nav animate
 function closeMenu() {
   let contentWidth = $(".nav-content").innerWidth();
@@ -73,109 +75,118 @@ $(".mainptn").click(function () {
 
 // search
 
-document.getElementById("Search").addEventListener("click", () => {
-  let temp = `<div class="col-md-6">
-  <input id={searchByName} type="text" placeholder="Search By Name" class="form-control mb-3" />
-</div>
-<div class="col-md-6">
-  <input type="text" placeholder="search By First Letter..." class="form-control mb-3" />
-</div> 
-<div class="row" id="displaySearch">
-
-      </div>`;
-  document.getElementById("randomMeals").innerHTML = temp;
-});
-function searchByName() {
-  document
-    .getElementById("searchByName")
-    .addEventListener("keyup", async function () {});
+function getSearch() {
+  search.innerHTML = `<div class='row py-4'>
+                      <div class="col-md-6">
+              <input onkeyup="searchByName(this.value)" type="text" placeholder="Search By Name" class="form-control bg-transparent" />
+                      </div>
+                      <div class="col-md-6">
+              <input onkeyup="searchByFirstLetter(this.value)" maxlength='1' type="text" placeholder="search By First Letter..." class="form-control bg-transparent" />
+                      </div> 
+                    </div>`;
+  mainRow.innerHTML = "";
+}
+async function searchByName(name) {
+  let searchApi = `https://www.themealdb.com/api/json/v1/1/search.php?s=${name}`;
+  let data = await getData(searchApi);
+  data ? displayData(data, template) : displayData([], template);
+}
+async function searchByFirstLetter(letter) {
+  letter == "" ? (letter = "a") : "";
+  let searchApi = `https://www.themealdb.com/api/json/v1/1/search.php?f=${letter}`;
+  let data = await getData(searchApi);
+  data ? displayData(data, template) : displayData([], template);
 }
 
 // search
 
 // Categories
 function catogoryTemplate(data) {
-  return `<div class="mealBox col-md-3">
-  <div class="position-relative">
+  return `<div class="col-md-3">
+  <div onclick="categoriesFilter('${
+    data.strCategory
+  }')" class="mealBox position-relative rounded-2">
     <img
       class="w-100"
       src="${data.strCategoryThumb}"
       alt=""
     />
-    <div class="layer catogory-layer d-flex flex-column justify-content-center align-items-center" id="layer">
-      <h2 class="meal-name">${data.strCategory}</h2>
-      <p>${data.strCategoryDescription}</p>
+    <div class="layer text-center" id="layer">
+      <h3 class="meal-name">${data.strCategory}</h3>
+      <p>${data.strCategoryDescription.split(" ").slice(0, 15).join(" ")}</p>
     </div>
   </div>
   </div>`;
 }
-document
-  .getElementById("Categories")
-  .addEventListener("click", async function () {
-    let categoryAPI = `https://www.themealdb.com/api/json/v1/1/categories.php`;
-    let data = await getData(categoryAPI);
-    displayData(data, catogoryTemplate, "randomMeals");
-  });
-
-function categoriesFilterTemplat(data) {
-  return `<div class="mealBox col-md-3">
-      <div class="position-relative">
-        <img
-          class="w-100"
-          src="${data.strMealThumb}"
-          alt=""
-        />
-        <div class="layer" id="layer">
-          <h2>${data.strMeal}</h2>
-        </div>
-      </div>
-      </div>`;
-}
-
-async function categoriesFilter() {
-  let mealName = document.querySelector(".meal-name");
-  mealName = mealName.textContent;
-  let categoryAPI = `https://www.themealdb.com/api/json/v1/1/filter.php?c=${mealName}`;
+async function displayCategories() {
+  search.innerHTML = "";
+  let categoryAPI = `https://www.themealdb.com/api/json/v1/1/categories.php`;
   let data = await getData(categoryAPI);
-  displayData(data, categoriesFilterTemplat, "randomMeals");
+  displayData(data, catogoryTemplate);
+}
+async function categoriesFilter(meal) {
+  let categoryAPI = `https://www.themealdb.com/api/json/v1/1/filter.php?c=${meal}`;
+  let data = await getData(categoryAPI);
+  displayData(data, template);
 }
 
 // Categories
 // Area
 function areaTemplate(data) {
-  return `<div class="col-md-3 text-center area mt-5">
-  <i class="fa-solid fa-city"></i>
-  <h2>${data.strArea}</h2>
-</div>`;
+  return `<div class="col-md-3">
+              <div onclick="areaFilter('${data.strArea}')" class="col-md-3 text-center area mt-5 rounded-2">
+                  <i class="fa-solid fa-city"></i>
+                  <h2>${data.strArea}</h2>
+              </div>
+          </div>`;
 }
-document.getElementById("Area").addEventListener("click", async function () {
+async function displayArea() {
+  search.innerHTML = "";
   let areaAPI = `https://www.themealdb.com/api/json/v1/1/list.php?a=list`;
   let data = await getData(areaAPI);
-  displayData(data, areaTemplate, "randomMeals");
-});
+  displayData(data, areaTemplate);
+}
+async function areaFilter(area) {
+  let areaFilterAPI = `https://www.themealdb.com/api/json/v1/1/filter.php?a=${area}`;
+  let data = await getData(areaFilterAPI);
+  displayData(data, template);
+}
 // Area
 
 // ingredients
 function ingredientsTemplate(data) {
   return `<div class="col-md-3 mt-5">
-  <div class="ingredients d-flex flex-column justify-content-center align-items-center">>
-  <i class="fa-solid fa-bowl-food"></i>
-  <h class ="text-white">${data.strIngredient}</h>
-  <p class ="text-white">${data.strDescription}</p>
-</div>
-</div>`;
+            <div onclick="displayCategories('${
+              data.strIngredient
+            }')" class="ingredients text-center">
+              <i class="fa-solid fa-bowl-food d-block fs-2 text-info"></i>
+              <h3 class ="text-white">${data.strIngredient}</h3>
+              <p class ="text-white">${data.strDescription
+                .split(" ")
+                .slice(0, 20)
+                .join(" ")}</p>
+            </div>
+          </div>`;
 }
-document
-  .getElementById("Ingredients")
-  .addEventListener("click", async function () {
-    let IngredientsAPI = `https://www.themealdb.com/api/json/v1/1/list.php?i=list`;
-    let data = await getData(IngredientsAPI);
-    displayData(data, ingredientsTemplate, "randomMeals");
-  });
+async function displayIngredients() {
+  search.innerHTML = "";
+  let response = await fetch(
+    "https://www.themealdb.com/api/json/v1/1/list.php?i=list"
+  );
+  let finalResponse = await response.json();
+  let data = await finalResponse.meals.slice(0, 20);
+  displayData(data, ingredientsTemplate);
+}
+async function ingredientsFilter(ingredient) {
+  let ingredientFilterAPI = `https://www.themealdb.com/api/json/v1/1/filter.php?i=${ingredient}`;
+  let data = await getData(ingredientFilterAPI);
+  displayData(data, template);
+}
 // ingredients
 
-// Contac
-document.getElementById("Contac").addEventListener("click", () => {
+// ContactUs
+function getContact() {
+  search.innerHTML = "";
   temp = `
   <h2 class="text-white mt-5">ContacUs...</h2>
   <div class="col-md-6">
@@ -227,7 +238,8 @@ document.getElementById("Contac").addEventListener("click", () => {
   </div>
 </div>`;
   document.getElementById("randomMeals").innerHTML = temp;
-
+}
+document.getElementById("Contac").addEventListener("click", () => {
   let userName = document.getElementById("name");
   let userEmail = document.getElementById("email");
   let userPhone = document.getElementById("phone");
