@@ -1,5 +1,6 @@
 // api
 let mainApi = `https://www.themealdb.com/api/json/v1/1/search.php?s=`;
+let mainRow = document.getElementById('randomMeals');
 async function getData(api) {
   let response = await fetch(api);
   let finalResponse = await response.json();
@@ -26,32 +27,45 @@ function template(data) {
     </div>`;
 }
 // function to display any data in any id
-async function displayData(array, div, id) {
+async function displayData(array, div) {
   // console.log(array,div,id)
   // let data = await getData(mainApi);
   let temp = ``;
   for (let i = 0; i < array.length; i++) {
     temp += div(array[i]);
   }
-  document.getElementById(id).innerHTML = temp;
+  mainRow.innerHTML = temp;
 }
 
 // displayData()
 // first page data
 async function randomData() {
   let data = await getData(mainApi);
-  displayData(data, template, "randomMeals");
+  displayData(data, template);
 }
 randomData();
 // nav animate
-let contentWidth = $(".nav-content").innerWidth();
-$("nav").animate({ left: `-${contentWidth}px` }, 500);
-
+function closeMenu() {
+  let contentWidth = $(".nav-content").innerWidth();
+  $("nav").animate({ left: `-${contentWidth}px` }, 500);
+  $(".mainptn").removeClass("fa-x");
+  $(".mainptn").addClass("fa-align-justify");
+  $(".links-animation li").animate({ top: 300 }, 500);
+}
+closeMenu();
 $(".mainptn").click(function () {
   if ($("nav").css("left") == "0px") {
-    $("nav").animate({ left: `-${contentWidth}px` }, 1000);
+    closeMenu();
   } else {
-    $("nav").animate({ left: `0px` }, 1000);
+    $("nav").animate({ left: `0px` }, 500, () => {
+      for (let i = 0; i < 5; i++) {
+        $(".links-animation li")
+          .eq(i)
+          .animate({ top: 0 }, (i + 6) * 100);
+      }
+    });
+    $(".mainptn").addClass("fa-x");
+    $(".mainptn").removeClass("fa-align-justify");
   }
 });
 
@@ -71,10 +85,10 @@ document.getElementById("Search").addEventListener("click", () => {
       </div>`;
   document.getElementById("randomMeals").innerHTML = temp;
 });
-function searchByName(){
-  document.getElementById('searchByName').addEventListener('keyup', async function(){
-    
-  })
+function searchByName() {
+  document
+    .getElementById("searchByName")
+    .addEventListener("keyup", async function () {});
 }
 
 // search
@@ -166,7 +180,7 @@ document.getElementById("Contac").addEventListener("click", () => {
   <h2 class="text-white mt-5">ContacUs...</h2>
   <div class="col-md-6">
   <div class="form-group">
-    <input class="form-control shadow id="name" placeholder="Enter Your Name">
+    <input onclick="nameValidation()" class="form-control shadow id="name" placeholder="Enter Your Name">
     <div class="alert mt-1 alert-danger d-none" id="namealert" role="alert">
       Special Characters and Numbers not allowed
     </div>
@@ -213,6 +227,20 @@ document.getElementById("Contac").addEventListener("click", () => {
   </div>
 </div>`;
   document.getElementById("randomMeals").innerHTML = temp;
+
+  let userName = document.getElementById("name");
+  let userEmail = document.getElementById("email");
+  let userPhone = document.getElementById("phone");
+  let userAge = document.getElementById("age");
+  let userPassword = document.getElementById("password");
+  let userRepassword = document.getElementById("rePassword");
 });
 
 // Contac
+
+function nameValidation() {
+  var rgex = /^[a-zA-Z ]+$/;
+  if (rgex.test(userName.value) == true && userName.value != "") {
+    userName.classlist.add("is-valid");
+  }
+}
