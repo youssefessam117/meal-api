@@ -45,7 +45,7 @@ async function randomData() {
   let data = await getData(mainApi);
   displayData(data, template);
 }
-// randomData();
+randomData();
 // nav animate
 function closeMenu() {
   let contentWidth = $(".nav-content").innerWidth();
@@ -187,72 +187,252 @@ async function ingredientsFilter(ingredient) {
 // ContactUs
 function getContact() {
   search.innerHTML = "";
-  temp = `
+  mainRow.innerHTML = `<div class="contact text-center">
   <h2 class="text-white mt-5">ContacUs...</h2>
-  <div class="col-md-6">
-  <div class="form-group">
-    <input onclick="nameValidation()" class="form-control shadow id="name" placeholder="Enter Your Name">
-    <div class="alert mt-1 alert-danger d-none" id="namealert" role="alert">
-      Special Characters and Numbers not allowed
+  <div class="container w-75">
+    <div class="row">
+      <div class="col-md-6 my-2">
+        <div class="form-group">
+          <input onkeyup="inputsValidation()" id="nameInput" class="form-control shadow-lg bg-transparent text-center border-bottom border-0 text-white" id="name" placeholder="Enter Your Name">
+          <div class="alert mt-1 alert-danger d-none" id="namealert" role="alert">
+            Special Characters and Numbers not allowed
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 my-2">
+        <div class="form-group">
+          <input onkeyup="inputsValidation()" id="emailInput"  class="form-control shadow-lg bg-transparent text-center border-bottom border-0 text-white" id="email" placeholder="Enter Email">
+          <div class="alert mt-1 alert-danger d-none" id="emailalert" role="alert">
+            Enter valid email. *Ex: xxx@yyy.zzz
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 my-2">
+        <div class="form-group">
+          <input onkeyup="inputsValidation()" id="phoneInput"  class="form-control shadow-lg bg-transparent text-center border-bottom border-0 text-white" id="phone" placeholder="Enter phone">
+          <div class="alert mt-1 alert-danger  d-none" id="phonealert" role="alert">
+            Enter valid Phone Number
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 my-2">
+        <div class="form-group">
+          <input onkeyup="inputsValidation()" id="ageInput" class="form-control shadow-lg bg-transparent text-center border-bottom border-0 text-white" id="age" placeholder="Enter Age">
+          <div class="alert mt-1 alert-danger  d-none" id="agealert" role="alert">
+            Enter valid Age
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 my-2">
+        <div class="form-group">
+          <input onkeyup="inputsValidation()" id="passwordInput" class="form-control shadow-lg bg-transparent text-center border-bottom border-0 text-white" type="password" id="password" placeholder="Enter Password">
+          <div class="alert mt-1 alert-danger  d-none" id="passwordalert" role="alert">
+            Enter valid password *Minimum eight characters, at least one letter and one number:*
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 my-2">
+        <div class="form-group">
+          <input onkeyup="inputsValidation()" id="repasswordInput" class="form-control shadow-lg bg-transparent text-center border-bottom border-0 text-white" type="password" id="rePassword" placeholder="Enter RePassword">
+          <div class="alert mt-1 alert-danger  d-none" id="repasswordalert" role="alert">
+            Enter valid Repassword
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-</div>
-<div class="col-md-6">
-  <div class="form-group">
-    <input  class="form-control" id="email" placeholder="Enter Email">
-    <div class="alert mt-1 alert-danger d-none" id="emailalert" role="alert">
-      Enter valid email. *Ex: xxx@yyy.zzz
-    </div>
-  </div>
-</div>
-<div class="col-md-6">
-  <div class="form-group">
-    <input  class="form-control" id="phone" placeholder="Enter phone">
-    <div class="alert mt-1 alert-danger  d-none" id="phonealert" role="alert">
-      Enter valid Phone Number
-    </div>
-  </div>
-</div>
-<div class="col-md-6">
-  <div class="form-group">
-    <input  class="form-control" id="age" placeholder="Enter Age">
-    <div class="alert mt-1 alert-danger  d-none" id="agealert" role="alert">
-      Enter valid Age
-    </div>
-  </div>
-</div>
-<div class="col-md-6">
-  <div class="form-group">
-    <input  class="form-control" type="password" id="password" placeholder="Enter Password">
-    <div class="alert mt-1 alert-danger  d-none" id="passwordalert" role="alert">
-      Enter valid password *Minimum eight characters, at least one letter and one number:*
-    </div>
-  </div>
-</div>
-<div class="col-md-6">
-  <div class="form-group">
-    <input  class="form-control" type="password" id="rePassword" placeholder="Enter RePassword">
-    <div class="alert mt-1 alert-danger  d-none" id="repasswordalert" role="alert">
-      Enter valid Repassword
-    </div>
-  </div>
+  <button id="submitBtn" disabled class="btn btn-outline-danger px2 mt-3">submit</button>
 </div>`;
-  document.getElementById("randomMeals").innerHTML = temp;
+  document.getElementById("nameInput").addEventListener("focus", () => {
+    nameInputTouched = true;
+  });
+
+  document.getElementById("emailInput").addEventListener("focus", () => {
+    emailInputTouched = true;
+  });
+
+  document.getElementById("phoneInput").addEventListener("focus", () => {
+    phoneInputTouched = true;
+  });
+
+  document.getElementById("ageInput").addEventListener("focus", () => {
+    ageInputTouched = true;
+  });
+
+  document.getElementById("passwordInput").addEventListener("focus", () => {
+    passwordInputTouched = true;
+  });
+
+  document.getElementById("repasswordInput").addEventListener("focus", () => {
+    repasswordInputTouched = true;
+  });
+  submitBtn = document.getElementById("submitBtn");
 }
-document.getElementById("Contac").addEventListener("click", () => {
-  let userName = document.getElementById("name");
-  let userEmail = document.getElementById("email");
-  let userPhone = document.getElementById("phone");
-  let userAge = document.getElementById("age");
-  let userPassword = document.getElementById("password");
-  let userRepassword = document.getElementById("rePassword");
-});
 
-// Contac
+let nameInputTouched = false;
+let emailInputTouched = false;
+let phoneInputTouched = false;
+let ageInputTouched = false;
+let passwordInputTouched = false;
+let repasswordInputTouched = false;
+function inputsValidation() {
+  if (nameInputTouched) {
+    document.getElementById("nameInput").classList.add("is-invalid");
+    if (nameValidation()) {
+      document
+        .getElementById("nameInput")
+        .classList.replace("is-invalid", "is-valid");
+      document
+        .getElementById("namealert")
+        .classList.replace("d-block", "d-none");
+    } else {
+      document
+        .getElementById("nameInput")
+        .classList.replace("is-valid", "is-invalid");
+      document
+        .getElementById("namealert")
+        .classList.replace("d-none", "d-block");
+    }
+  }
+  if (emailInputTouched) {
+    document.getElementById("emailInput").classList.add("is-invalid");
+    if (emailValidation()) {
+      document
+        .getElementById("emailInput")
+        .classList.replace("is-invalid", "is-valid");
+      document
+        .getElementById("emailalert")
+        .classList.replace("d-block", "d-none");
+    } else {
+      document
+        .getElementById("emailInput")
+        .classList.replace("is-valid", "is-invalid");
+      document
+        .getElementById("emailalert")
+        .classList.replace("d-none", "d-block");
+    }
+  }
 
-function nameValidation() {
-  var rgex = /^[a-zA-Z ]+$/;
-  if (rgex.test(userName.value) == true && userName.value != "") {
-    userName.classlist.add("is-valid");
+  if (phoneInputTouched) {
+    document.getElementById("phoneInput").classList.add("is-invalid");
+    if (phoneValidation()) {
+      document
+        .getElementById("phoneInput")
+        .classList.replace("is-invalid", "is-valid");
+      document
+        .getElementById("phonealert")
+        .classList.replace("d-block", "d-none");
+    } else {
+      document
+        .getElementById("phoneInput")
+        .classList.replace("is-valid", "is-invalid");
+      document
+        .getElementById("phonealert")
+        .classList.replace("d-none", "d-block");
+    }
+  }
+
+  if (ageInputTouched) {
+    document.getElementById("ageInput").classList.add("is-invalid");
+    if (ageValidation()) {
+      document
+        .getElementById("ageInput")
+        .classList.replace("is-invalid", "is-valid");
+      document
+        .getElementById("agealert")
+        .classList.replace("d-block", "d-none");
+    } else {
+      document
+        .getElementById("ageInput")
+        .classList.replace("is-valid", "is-invalid");
+      document
+        .getElementById("agealert")
+        .classList.replace("d-none", "d-block");
+    }
+  }
+
+  if (passwordInputTouched) {
+    document.getElementById("passwordInput").classList.add("is-invalid");
+    if (passwordValidation()) {
+      document
+        .getElementById("passwordInput")
+        .classList.replace("is-invalid", "is-valid");
+      document
+        .getElementById("passwordalert")
+        .classList.replace("d-block", "d-none");
+    } else {
+      document
+        .getElementById("passwordInput")
+        .classList.replace("is-valid", "is-invalid");
+      document
+        .getElementById("passwordalert")
+        .classList.replace("d-none", "d-block");
+    }
+  }
+  if (repasswordInputTouched) {
+    document.getElementById("repasswordInput").classList.add("is-invalid");
+    if (repasswordValidation()) {
+      document
+        .getElementById("repasswordInput")
+        .classList.replace("is-invalid", "is-valid");
+      document
+        .getElementById("repasswordalert")
+        .classList.replace("d-block", "d-none");
+    } else {
+      document
+        .getElementById("repasswordInput")
+        .classList.replace("is-valid", "is-invalid");
+      document
+        .getElementById("repasswordalert")
+        .classList.replace("d-none", "d-block");
+    }
+  }
+
+  if (
+    nameValidation() &&
+    emailValidation() &&
+    phoneValidation() &&
+    ageValidation() &&
+    passwordValidation() &&
+    repasswordValidation()
+  ) {
+    submitBtn.removeAttribute("disabled");
+  } else {
+    submitBtn.setAttribute("disabled", true);
   }
 }
+function nameValidation() {
+  return /^[a-zA-Z ]+$/.test(document.getElementById("nameInput").value);
+}
+
+function emailValidation() {
+  return /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+    document.getElementById("emailInput").value
+  );
+}
+
+function phoneValidation() {
+  return /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/.test(
+    document.getElementById("phoneInput").value
+  );
+}
+
+function ageValidation() {
+  return /^(0?[1-9]|[1-9][0-9]|[1][1-9][1-9]|200)$/.test(
+    document.getElementById("ageInput").value
+  );
+}
+
+function passwordValidation() {
+  return /^(?=.*\d)(?=.*[a-z])[0-9a-zA-Z]{8,}$/.test(
+    document.getElementById("passwordInput").value
+  );
+}
+
+function repasswordValidation() {
+  return (
+    document.getElementById("repasswordInput").value ==
+    document.getElementById("passwordInput").value
+  );
+}
+// Contac
