@@ -14,15 +14,15 @@ async function getData(api) {
 // api
 // function to get the html content
 function template(data) {
-  return `<div class="col-md-3">
-    <div class="mealBox position-relative rounded-2">
+  return `<div class="col-md-3 p-3">
+    <div onclick="getDetails(${data.idMeal})" class="mealBox position-relative rounded-2 cursor">
       <img
         class="w-100"
         src="${data.strMealThumb}"
         alt=""
       />
       <div class="layer d-flex align-items-center" id="layer">
-        <h2>${data.strMeal}</h2>
+        <h2 class='text-black'>${data.strMeal}</h2>
       </div>
     </div>
     </div>`;
@@ -100,9 +100,58 @@ async function searchByFirstLetter(letter) {
 
 // search
 
+// details
+function detailsTemplate(data) {
+  let ingredients = ``;
+  for (let i = 1; i < 20; i++) {
+    if (data[`strIngredient${i}`]) {
+      ingredients += `<li class="my-3 mx-1 p-1 alert-success alert rounded nav-link">${
+        data[`strMeasure${i}`]
+      } ${data[`strIngredient${i}`]}</li>`;
+    }
+  }
+  let tags = data.strTags?.split(",");
+  if (!tags) tags = [];
+
+  let tagsStr = "";
+  for (let i = 0; i < tags.length; i++) {
+    tagsStr += `
+        <li class="alert alert-danger m-2 p-1 nav-link">${tags[i]}</li>`;
+  }
+  return `  <div class="col-md-4">
+            <div>
+              <img
+                class="w-100"
+                src="${data.strMealThumb}"
+                alt=""
+              />
+            </div>
+            <h3 class="text-white">${data.strMeal}</h3>
+          </div>
+          <div class="col-md-8 text-start">
+            <h3 class="text-white">Instructions</h3>
+            <p class="text-white">
+            ${data.strInstructions}
+            </p>
+            <p>Area : <span>${data.strArea}</span></p>
+            <p>Category : <span>${data.strCategory}</span></p>
+            <h4>Recipes :</h4>
+            <div class="d-flex flex-wrap">${ingredients}</div>
+            <h4>Tags :</h4>
+            <div class='d-flex'>${tagsStr}</div>
+              <a class="btn btn-success" target="_blank" href="${data.strSource}">Source</a>
+              <a class="btn btn-danger" target="_blank" href="${data.strYoutube}">Youtub</a>
+          </div>`;
+}
+async function getDetails(id) {
+  let detailsApi = `https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`;
+  data = await getData(detailsApi);
+  displayData(data, detailsTemplate);
+}
+// details
 // Categories
 function catogoryTemplate(data) {
-  return `<div class="col-md-3">
+  return `<div class="col-md-3 cursor">
   <div onclick="categoriesFilter('${
     data.strCategory
   }')" class="mealBox position-relative rounded-2">
@@ -133,12 +182,10 @@ async function categoriesFilter(meal) {
 // Categories
 // Area
 function areaTemplate(data) {
-  return `<div class="col-md-3">
-              <div onclick="areaFilter('${data.strArea}')" class="col-md-3 text-center area mt-5 rounded-2">
+  return `<div onclick="areaFilter('${data.strArea}')" class="col-md-3 text-center area my-3 cursor">
                   <i class="fa-solid fa-city"></i>
                   <h2>${data.strArea}</h2>
-              </div>
-          </div>`;
+              </div>`;
 }
 async function displayArea() {
   search.innerHTML = "";
@@ -155,7 +202,7 @@ async function areaFilter(area) {
 
 // ingredients
 function ingredientsTemplate(data) {
-  return `<div class="col-md-3 mt-5">
+  return `<div class="col-md-3 cursor">
             <div onclick="displayCategories('${
               data.strIngredient
             }')" class="ingredients text-center">
